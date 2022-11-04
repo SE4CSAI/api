@@ -12,6 +12,7 @@ from typing import Any
 from PIL import Image
 import requests
 import uvicorn
+import os
 
 app = FastAPI(title= " Bird or Bug Classifier")
 
@@ -66,9 +67,14 @@ def upload_audio(file : UploadFile = File(...)):
     finally:
         file.file.close()
     learn = load_learner('src/audClassifier.pkl')
-    ## TODO : Setup the pipeline to convert each new sample to the required format for classificaiton,
-    ##        Create clean up function to remove downloaded files
     cfg = AudioConfig.BasicSpectrogram()
     aud2spec = AudioToSpec.from_cfg(cfg)
     pipe = Pipeline([AudioTensor.create, aud2spec])
     itemTfms = [ResizeSignal(7000), aud2spec]
+    audio = AudioTensor.create(file.filename)
+    prediction = learn.predict(audio)
+    os.remove(file.filename)
+    return {"status_code": 200,
+             "predicted_label": prediction[0],
+             }
+
