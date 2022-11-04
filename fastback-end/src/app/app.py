@@ -67,10 +67,6 @@ def upload_audio(file : UploadFile = File(...)):
     finally:
         file.file.close()
     learn = load_learner('src/audClassifier.pkl')
-    cfg = AudioConfig.BasicSpectrogram()
-    aud2spec = AudioToSpec.from_cfg(cfg)
-    pipe = Pipeline([AudioTensor.create, aud2spec])
-    itemTfms = [ResizeSignal(7000), aud2spec]
     audio = AudioTensor.create(file.filename)
     prediction = learn.predict(audio)
     os.remove(file.filename)
