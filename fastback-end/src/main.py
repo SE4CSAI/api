@@ -13,6 +13,7 @@ from PIL import Image
 import requests
 import uvicorn
 
+# Functions required for the classification model. These were used during training so they are required when loading the saved model.
 def AlterLearner(learn, n_channels=1):
   "Adjust a `Learner`'s model to accept `1` channel"
   layer = learn.model[0][0]
