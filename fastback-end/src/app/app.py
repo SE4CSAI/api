@@ -50,11 +50,11 @@ def upload_image(file : UploadFile = File(...)):
                 "message": "file could not be opened"
                 }
     prediction, _, probs = learn.predict(img)
+    os.remove(file.filename)
     return {"status_code": 200,
             "predicted_label": prediction,
             "probs" : {probs[0].tolist(), probs[1].tolist()}
             }
-
 # End point for classifying an audio file
 @app.post("/upload_audio")
 def upload_audio(file : UploadFile = File(...)):
