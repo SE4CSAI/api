@@ -11,7 +11,7 @@ def image_class_integration_test():
             'file': open(image, 'rb'),
         }
         response = requests.post('http://127.0.0.1:8000/upload_image', headers=headers, files=files)
-        print("expected: <string>predicted label, response : {}".format(response.json()['predicted_label']))
+        print("expected: <string>predicted label, response : {}".format(response.json()))
 
 def audio_class_integration_test():
     print()
@@ -26,15 +26,17 @@ def audio_class_integration_test():
             'file': open(audio, 'rb'),
         }
         response = requests.post('http://127.0.0.1:8000/upload_audio', headers=headers, files=files)
-        print("expected: <string>predicted label, response : {}".format(response.json()['predicted_label']))
+        print("expected: <string>predicted label, response : {}".format(response.json()))
 
 def from_url_image_class_integration_test():
     import requests
     print()
     print("Testing classifier from web url")
     example_urls = ['https://www.americanmeadows.com/media/wysiwyg/echinacea-goldfinch-mobile.jpg',
-                     'https://www.protechpestcontrol.com.au/uploaded_files/BL_40045_03052020173143.jpg']
-    for url in example_urls:
+                     'https://www.protechpestcontrol.com.au/uploaded_files/BL_40045_03052020173143.jpg',
+                    'https://www.protechpestcontrol.com.au/uploaded_files/BL_40045_0305202013143.jpg']
+    expected_results = ['bird', 'insect', 'file could not be opened' ]
+    for i, url in enumerate(example_urls):
         headers = {
             'accept': 'application/json',
             'content-type': 'application/x-www-form-urlencoded',
@@ -43,7 +45,7 @@ def from_url_image_class_integration_test():
             'request': url,
         }
         response = requests.post('http://127.0.0.1:8000/predict/image_model/from_url', params=params, headers=headers)
-        print("expected: <string>predicted label, response : {}".format(response.json()['predicted_label'][0]))
+        print("expected: {}, response : {}".format(expected_results[i],response.json()))
 try:
     image_class_integration_test()
     audio_class_integration_test()
