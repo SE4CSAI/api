@@ -4,7 +4,6 @@ RUN pip install --upgrade pip
 WORKDIR /code
 
 COPY ./requirements.txt /code/requirements.txt
-RUN pip install fastai==2.7.10
 RUN pip install --no-cache-dir --upgrade -r /code/requirements.txt
 
 COPY ./src ./src/
