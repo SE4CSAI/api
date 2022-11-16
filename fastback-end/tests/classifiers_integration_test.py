@@ -1,7 +1,7 @@
 def image_class_integration_test():
     import requests
     print("Testing image classifier with image upload")
-    example_images= ['bird1.jpg','bug1.jpg','bird2.jpg','bird3.jpg','bug2.jpg']
+    example_images= ['bird1.jpg','bug1.jpg','bird2.jpg','bird3.jpg','bug2.jpg', "sometext.rtf"]
     expected_results = [{'status_code': 200, 'predicted_label': 'bird', 'probs': [0.9985526204109192, 0.0014473225455731153]},
                         {'status_code': 200, 'predicted_label': 'bird',
                          'probs': [0.9999029636383057, 9.700276859803125e-05]},
@@ -10,7 +10,11 @@ def image_class_integration_test():
                         {'status_code': 200, 'predicted_label': 'bird',
                          'probs': [0.9996663331985474, 0.000333732517901808]},
                         {'status_code': 200, 'predicted_label': 'insect',
-                         'probs': [3.7613301628880436e-06, 0.9999961853027344]}
+                         'probs': [3.7613301628880436e-06, 0.9999961853027344]},
+                        {
+                            "status_code": 400,
+                            "message": "file could not be opened"
+                        }
                         ]
     for i, image in enumerate(example_images):
         headers = {
@@ -25,25 +29,26 @@ def image_class_integration_test():
         except AssertionError:
             print('Failed.')
 
-def audio_class_integration_test():
-    print("Testing audio classifier with file upload")
-    import requests
-    example_audio = ['Platypleuraplumosa.wav', 'Tettigoniaviridissima.wav']
-    expected_results = [ {'status_code': 200, 'predicted_label': 'Platypleuraplumosa'},
-                         {'status_code': 200, 'predicted_label': 'Tettigoniaviridissima'}
-                         ]
-    for i, audio in enumerate(example_audio):
-        headers = {
-            'accept': 'application/json',
-        }
-        files = {
-            'file': open(audio, 'rb'),
-        }
-        response = requests.post('http://127.0.0.1:8000/upload_audio', headers=headers, files=files)
-    try:
-        assert expected_results[i] == response.json()
-    except AssertionError:
-        print('Failed.')
+# def audio_class_integration_test():
+#     print("Testing audio classifier with file upload")
+#     import requests
+#     example_audio = ['Platypleuraplumosa.wav', 'Tettigoniaviridissima.wav', 'sometext.rtf']
+#     expected_results = [ {'status_code': 200, 'predicted_label': 'Platypleuraplumosa'},
+#                          {'status_code': 200, 'predicted_label': 'Tettigoniaviridissima'},
+#                          {"status_code": 400,"message": "file could not be opened"}
+#                          ]
+#     for i, audio in enumerate(example_audio):
+#         headers = {
+#             'accept': 'application/json',
+#         }
+#         files = {
+#             'file': open(audio, 'rb'),
+#         }
+#         response = requests.post('http://127.0.0.1:8000/upload_audio', headers=headers, files=files)
+#     try:
+#         assert expected_results[i] == response.json()
+#     except AssertionError:
+#         print('Failed.')
 
 def from_url_image_class_integration_test():
     import requests
@@ -71,7 +76,7 @@ def from_url_image_class_integration_test():
 
 try:
     image_class_integration_test()
-    audio_class_integration_test()
+    #audio_class_integration_test()
     from_url_image_class_integration_test()
     print("Passed.")
 except:
