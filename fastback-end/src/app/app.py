@@ -26,19 +26,19 @@ app = FastAPI(title= " Bird or Bug Classifier")
 # Endpoint for classifiying an image from a URL
 @app.post('/predict/image_model/from_url', status_code=200)
 async def predict_from_url(request: str):
-    return {'status_code': 200, 'predicted_label': 'insect'}
+    #return {'status_code': 200, 'predicted_label': 'insect'}
     # from fastai.learner import load_learner
-    # learn = load_learner('src/imgClassifier.pkl')
-    # try:
-    #     img = PILImage.create(requests.get(request, stream=True).raw)
-    # except Exception as e:
-    #     return {"status_code": 400,
-    #             "message": "file could not be opened"
-    #             }
-    # prediction = learn.predict(img)
-    # return {"status_code": 200,
-    #         "predicted_label": prediction,
-    #         }
+    learn = load_learner('src/imgClassifier.pkl')
+    try:
+        img = PILImage.create(requests.get(request, stream=True).raw)
+    except Exception as e:
+        return {"status_code": 400,
+                "message": "file could not be opened"
+                }
+    prediction = learn.predict(img)
+    return {"status_code": 200,
+            "predicted_label": prediction,
+            }
 
 # End point for classfying an image from file upload.
 @app.post("/upload_image")
@@ -52,20 +52,20 @@ def upload_image(file : UploadFile = File(...)):
         return {"message" : "There was an error uploading the file"}
     finally:
         file.file.close()
-    # learn = load_learner('src/imgClassifier.pkl')
-    # try:
-    #     img = PILImage.create(file.filename)
-    # except Exception as e:
-    #     os.remove(file.filename)
-    #     return {"status_code": 400,
-    #             "message": "file could not be opened"
-    #             }
-    # prediction, _, probs = learn.predict(img)
-    # os.remove(file.filename)
-    # return {"status_code": 200,
-    #         "predicted_label": prediction,
-    #         "probs" : {probs[0].tolist(), probs[1].tolist()}
-    #         }
+    learn = load_learner('src/imgClassifier.pkl')
+    try:
+        img = PILImage.create(file.filename)
+    except Exception as e:
+        os.remove(file.filename)
+        return {"status_code": 400,
+                "message": "file could not be opened"
+                }
+    prediction, _, probs = learn.predict(img)
+    os.remove(file.filename)
+    return {"status_code": 200,
+            "predicted_label": prediction,
+            "probs" : {probs[0].tolist(), probs[1].tolist()}
+            }
 # End point for classifying an audio file
 # @app.post("/upload_audio")
 # def upload_audio(file : UploadFile = File(...)):
